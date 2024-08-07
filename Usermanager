@@ -1,0 +1,31 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract UserManager {
+    // Cấu trúc dữ liệu để lưu thông tin người dùng
+    struct User {
+        string name;
+        uint256 age;
+    }
+
+    // Mapping để lưu thông tin người dùng theo địa chỉ Ethereum
+    mapping(address => User) private users;
+
+    // Sự kiện được phát khi thông tin người dùng được cập nhật
+    event UserUpdated(address indexed userAddress, string name, uint256 age);
+
+    // Hàm để cập nhật thông tin người dùng
+    function updateUser(string calldata name, uint256 age) external {
+        // Cập nhật thông tin người dùng trong mapping
+        users[msg.sender] = User(name, age);
+        
+        // Phát sự kiện khi thông tin người dùng được cập nhật
+        emit UserUpdated(msg.sender, name, age);
+    }
+
+    // Hàm để lấy thông tin người dùng
+    function getUser() external view returns (string memory name, uint256 age) {
+        User memory user = users[msg.sender];
+        return (user.name, user.age);
+    }
+}
